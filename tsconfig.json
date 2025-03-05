@@ -1,0 +1,9 @@
+{
+  "outDir": "./dist",
+  "rootDir": "./src",
+  "strict": true,
+  "compilerOptions": {    
+    "module": "CommonJS",
+    "esModuleInterop": true,
+  },
+}
