@@ -4,17 +4,11 @@ import { ClientController } from "../controllers/client.controller";
 const clientRoutes = Router();
 const clientController = new ClientController();
 
-const wrapAsync = (fn: Function) => (req: any, res: any, next: any) => {
-  Promise.resolve(fn(req, res, next)).catch(next);
-};
-
-clientRoutes.get("/clients", wrapAsync(clientController.index));
-clientRoutes.get("/clients/:id", wrapAsync(clientController.show));
-
-clientRoutes.post("/clients", wrapAsync(clientController.create));
-
-clientRoutes.put("/clients/:id", wrapAsync(clientController.update));
-
-clientRoutes.delete("/clients/:id", wrapAsync(clientController.delete));
+clientRoutes
+  .post("/clients", (req, res) => clientController.create(req, res))
+  .get("/clients", (req, res) => clientController.index(req, res))
+  .get("/clients/:id", (req, res) => clientController.show(req, res))
+  .put("/clients/:id", (req, res) => clientController.update(req, res))
+  .delete("/clients/:id", (req, res) => clientController.delete(req, res));
 
 export { clientRoutes };
