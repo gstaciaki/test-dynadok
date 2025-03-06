@@ -5,4 +5,8 @@ export class ClientRepository extends BaseRepository<Client> {
   constructor() {
     super(Client);
   }
+
+  async findByEmail(email: string): Promise<Client | null> {
+    return this.repository.findOne({ where: { email } });
+  }
 }

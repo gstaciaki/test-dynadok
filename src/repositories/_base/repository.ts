@@ -3,7 +3,7 @@ import { AppDataSource } from "../../database/data-source";
 import { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity";
 
 export class BaseRepository<T> {
-  private repository: Repository<T>;
+  protected repository: Repository<T>;
 
   constructor(entity: EntityTarget<T>) {
     this.repository = AppDataSource.getRepository(entity);
@@ -15,7 +15,7 @@ export class BaseRepository<T> {
   }
 
   async findOne(id: string): Promise<T | null> {
-    return this.repository.findOne({ where: { id } as any });
+    return this.repository.findOne(id as any);
   }
 
   async findAll(): Promise<T[]> {
