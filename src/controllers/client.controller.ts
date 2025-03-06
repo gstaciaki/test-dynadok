@@ -5,48 +5,61 @@ import { UpdateClientUseCase } from "../use-cases/client/update-client.use-case"
 import { DeleteClientUseCase } from "../use-cases/client/delete-client.use-case";
 import { ListClientsUseCase } from "../use-cases/client/list-clients.use-case";
 import { FindClientUseCase } from "../use-cases/client/find-client.use-case";
+import { BaseController } from "./_base/controller";
 
-export class ClientController {
+export class ClientController extends BaseController {
+  private clientRepository: ClientRepository;
+
+  constructor() {
+    super();
+    this.clientRepository = new ClientRepository();
+  }
+
   async index(req: Request, res: Response) {
     try {
-      const clientRepository = new ClientRepository();
-      const findAllClientsUseCase = new ListClientsUseCase(clientRepository);
-
-      const clients = await findAllClientsUseCase.execute();
-      return res.status(200).json(clients);
+      const findAllClientsUseCase = new ListClientsUseCase(
+        this.clientRepository
+      );
+      const clients = await findAllClientsUseCase.performExecute();
+      this.ok(req, res, clients);
     } catch (error) {
-      return res.status(500).json({ error: "Failed to fetch clients" });
+      this.internalServerError(req, res, error);
     }
   }
 
   async create(req: Request, res: Response) {
     try {
       const { name, email, phone } = req.body;
-      const clientRepository = new ClientRepository();
-      const createClientUseCase = new CreateClientUseCase(clientRepository);
+      const createClientUseCase = new CreateClientUseCase(
+        this.clientRepository
+      );
 
-      const client = await createClientUseCase.execute({ name, email, phone });
-      return res.status(201).json(client);
+      const client = await createClientUseCase.performExecute({
+        name,
+        email,
+        phone,
+      });
+      this.created(req, res, client);
     } catch (error) {
-      return res.status(400).json({ error: error.message });
+      this.badRequest(req, res, error);
     }
   }
 
   async show(req: Request, res: Response) {
     try {
       const { id } = req.params;
+      const findClientByIdUseCase = new FindClientUseCase(
+        this.clientRepository
+      );
 
-      const clientRepository = new ClientRepository();
-      const findClientByIdUseCase = new FindClientUseCase(clientRepository);
-
-      const client = await findClientByIdUseCase.execute(id);
+      const client = await findClientByIdUseCase.performExecute(id);
       if (!client) {
-        return res.status(404).json({ error: "Client not found" });
+        return this.notFound(req, res, new Error("Client not found"));
       }
 
-      return res.status(200).json(client);
+      this.ok(req, res, client);
     } catch (error) {
-      return res.status(500).json({ error: error.message });
+      this.internalServerError(req, res, error);
     }
   }
 
@@ -54,31 +67,33 @@ export class ClientController {
     try {
       const { id } = req.params;
       const { name, email, phone } = req.body;
-      const clientRepository = new ClientRepository();
-      const updateClientUseCase = new UpdateClientUseCase(clientRepository);
+      const updateClientUseCase = new UpdateClientUseCase(
+        this.clientRepository
+      );
 
-      const client = await updateClientUseCase.execute({
+      const client = await updateClientUseCase.performExecute({
         id,
         name,
         email,
         phone,
       });
-      return res.status(200).json(client);
+      this.ok(req, res, client);
     } catch (error) {
-      return res.status(400).json({ error: error.message });
+      this.badRequest(req, res, error);
     }
   }
 
   async delete(req: Request, res: Response) {
     try {
       const { id } = req.params;
-      const clientRepository = new ClientRepository();
-      const deleteClientUseCase = new DeleteClientUseCase(clientRepository);
+      const deleteClientUseCase = new DeleteClientUseCase(
+        this.clientRepository
+      );
 
-      await deleteClientUseCase.execute(id);
-      return res.status(204).send(); // No content
+      await deleteClientUseCase.performExecute(id);
+      this.noContent(req, res);
     } catch (error) {
-      return res.status(400).json({ error: error.message });
+      this.badRequest(req, res, error);
     }
   }
 }

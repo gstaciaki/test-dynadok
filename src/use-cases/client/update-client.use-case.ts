@@ -1,5 +1,6 @@
 import { ClientRepository } from "../../repositories/client.repository";
 import { Client } from "../../entities/client.entity";
+import { BaseUseCase } from "../_base/use-case";
 
 interface IUpdateClientDTO {
   id: string;
@@ -8,26 +9,34 @@ interface IUpdateClientDTO {
   phone?: string;
 }
 
-export class UpdateClientUseCase {
-  constructor(private clientRepository: ClientRepository) {}
+export class UpdateClientUseCase extends BaseUseCase<
+  IUpdateClientDTO,
+  Client | null
+> {
+  constructor(private clientRepository: ClientRepository) {
+    super();
+  }
 
-  async execute({
-    id,
-    name,
-    email,
-    phone,
-  }: IUpdateClientDTO): Promise<Client | null> {
-    const client = await this.clientRepository.findOne(id);
-    if (!client) {
-      throw new Error("Client not found");
+  protected validate(data: IUpdateClientDTO): void {
+    if (!data.id) throw new Error("ID is required");
+    if (!data.name && !data.email && !data.phone) {
+      throw new Error("At least one field must be updated");
     }
+  }
 
-    const updatedData: any = {};
+  protected async execute(data: IUpdateClientDTO): Promise<Client | null> {
+    const client = await this.clientRepository.findOne(data.id);
+    if (!client) throw new Error("Client not found");
 
-    if (name) updatedData.name = name;
-    if (email) updatedData.email = email;
-    if (phone) updatedData.phone = phone;
+    const updatedData: Partial<Client> = {};
+    if (data.name) updatedData.name = data.name;
+    if (data.email) {
+      const emailInUse = await this.clientRepository.findByEmail(data.email);
+      if (emailInUse) throw new Error("Email already ind use");
+      updatedData.email = data.email;
+    }
+    if (data.phone) updatedData.phone = data.phone;
 
-    return await this.clientRepository.update(id, updatedData);
+    return this.clientRepository.update(data.id, updatedData);
   }
 }

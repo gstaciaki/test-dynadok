@@ -1,8 +1,8 @@
 import * as express from "express";
 import * as cors from "cors";
 import * as dotenv from "dotenv";
-import { clientRoutes } from "./routes/clients.routes";
 import { AppDataSource } from "./database/data-source";
+import { routes } from "./routes";
 
 dotenv.config();
 
@@ -11,11 +11,11 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.get("/", (req, res) => {
+app.get("/health", (req, res) => {
   res.send("API funcionando!");
 });
 
-app.use("/api", clientRoutes);
+app.use("/api", routes);
 
 AppDataSource.initialize()
   .then(() => {
