@@ -1,8 +1,8 @@
 import * as express from "express";
 import * as cors from "cors";
 import * as dotenv from "dotenv";
-import { AppDataSource } from "./database/data-source";
-import { routes } from "./routes";
+import { AppDataSource } from "./infrastructure/database/data-source";
+import { routes } from "./interfaces/routes";
 
 dotenv.config();
 

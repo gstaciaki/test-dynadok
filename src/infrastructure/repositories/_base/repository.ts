@@ -1,6 +1,6 @@
 import { Repository, EntityTarget, DeepPartial } from "typeorm";
-import { AppDataSource } from "../../database/data-source";
 import { QueryDeepPartialEntity } from "typeorm/query-builder/QueryPartialEntity";
+import { AppDataSource } from "../../database/data-source";
 
 export class BaseRepository<T> {
   protected repository: Repository<T>;

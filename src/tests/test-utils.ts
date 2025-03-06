@@ -1,5 +1,5 @@
 import { MongoMemoryServer } from "mongodb-memory-server";
-import { AppDataSource } from "../database/data-source";
+import { AppDataSource } from "../infrastructure/database/data-source";
 import { TestEntity } from "./repositories/_base/mocks/entity-mock.test";
 
 let mongoServer: MongoMemoryServer;

@@ -1,5 +1,5 @@
-import { ClientRepository } from "../../repositories/client.repository";
-import { Client } from "../../entities/client.entity";
+import { Client } from "../../../domain/entities/Client";
+import { ClientRepository } from "../../../infrastructure/repositories/client.repository";
 import { BaseUseCase } from "../_base/use-case";
 
 export class FindClientUseCase extends BaseUseCase<string, Client | null> {
@@ -12,6 +12,9 @@ export class FindClientUseCase extends BaseUseCase<string, Client | null> {
   }
 
   protected async execute(id: string): Promise<Client | null> {
+    const a = await this.clientRepository.findOne(id);
+    console.log(a);
+
     return this.clientRepository.findOne(id);
   }
 }

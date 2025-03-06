@@ -1,4 +1,4 @@
-import { BaseRepository } from "../../../repositories/_base/repository";
+import { BaseRepository } from "../../../infrastructure/repositories/_base/repository";
 import { initializeTestDB, stopTestDB } from "../../test-utils";
 import { TestEntity } from "./mocks/entity-mock.test";
 
