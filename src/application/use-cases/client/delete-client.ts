@@ -1,4 +1,4 @@
-import { ClientRepository } from "../../repositories/client.repository";
+import { ClientRepository } from "../../../infrastructure/repositories/client.repository";
 import { BaseUseCase } from "../_base/use-case";
 
 export class DeleteClientUseCase extends BaseUseCase<string, void> {

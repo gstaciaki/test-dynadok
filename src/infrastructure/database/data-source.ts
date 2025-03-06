@@ -7,5 +7,5 @@ export const AppDataSource = new DataSource({
   database: process.env.DATABASE_NAME,
   useNewUrlParser: true,
   useUnifiedTopology: true,
-  entities: [__dirname + "/../entities/*.ts"],
+  entities: [__dirname + "/entities/*.ts"],
 });

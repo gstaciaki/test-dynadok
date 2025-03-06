@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
-import { ClientRepository } from "../repositories/client.repository";
-import { CreateClientUseCase } from "../use-cases/client/create-client.use-case";
-import { UpdateClientUseCase } from "../use-cases/client/update-client.use-case";
-import { DeleteClientUseCase } from "../use-cases/client/delete-client.use-case";
-import { ListClientsUseCase } from "../use-cases/client/list-clients.use-case";
-import { FindClientUseCase } from "../use-cases/client/find-client.use-case";
+import { CreateClientUseCase } from "../../application/use-cases/client/create-client";
+import { UpdateClientUseCase } from "../../application/use-cases/client/update-client";
+import { DeleteClientUseCase } from "../../application/use-cases/client/delete-client";
+import { ListClientsUseCase } from "../../application/use-cases/client/list-clients";
+import { FindClientUseCase } from "../../application/use-cases/client/find-client";
 import { BaseController } from "./_base/controller";
+import { ClientRepository } from "../../infrastructure/repositories/client.repository";
 
 export class ClientController extends BaseController {
   private clientRepository: ClientRepository;

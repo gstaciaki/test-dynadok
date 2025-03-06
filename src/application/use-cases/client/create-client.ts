@@ -1,15 +1,10 @@
-import { Client } from "../../entities/client.entity";
-import { ClientRepository } from "../../repositories/client.repository";
+import { Client } from "../../../domain/entities/Client";
+import { IClientRepository } from "../../../domain/repositories/IClientRepository";
+import { CreateClientDTO } from "../../dtos/client/CreateClient.dto";
 import { BaseUseCase } from "../_base/use-case";
 
-interface CreateClientDTO {
-  name: string;
-  email: string;
-  phone: string;
-}
-
 export class CreateClientUseCase extends BaseUseCase<CreateClientDTO, Client> {
-  constructor(private clientRepository: ClientRepository) {
+  constructor(private clientRepository: IClientRepository) {
     super();
   }
 
@@ -24,8 +19,8 @@ export class CreateClientUseCase extends BaseUseCase<CreateClientDTO, Client> {
     const clientExists = await this.clientRepository.findByEmail(data.email);
     if (clientExists) throw new Error("Client already exists");
 
-    const client = new Client();
-    Object.assign(client, data);
-    return this.clientRepository.create(client);
+    const client = new Client(data.name, data.email, data.phone);
+    const createdClient = await this.clientRepository.create(client);
+    return Object.assign(client, createdClient);
   }
 }
