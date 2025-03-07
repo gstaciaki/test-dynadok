@@ -1,6 +1,6 @@
 import { MongoMemoryServer } from "mongodb-memory-server";
 import { AppDataSource } from "../infrastructure/database/data-source";
-import { TestEntity } from "./repositories/_base/mocks/entity-mock.test";
+import { TestEntity } from "./repositories/_base/mocks/entity-mock";
 
 let mongoServer: MongoMemoryServer;
 
@@ -14,8 +14,10 @@ export const initializeTestDB = async () => {
     database: "test_db",
     useNewUrlParser: true,
     useUnifiedTopology: true,
-    entities: [__dirname + "/../entities/*.ts", TestEntity],
-    
+    entities: [
+      __dirname + "/../infrastructure/database/entities/*.ts",
+      TestEntity,
+    ],
   });
 
   await AppDataSource.initialize();
