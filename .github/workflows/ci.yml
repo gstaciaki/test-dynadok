@@ -17,8 +17,6 @@ jobs:
         image: mongo:latest
         ports:
           - 27017:27017
-        environment:
-        - MONGO_URL=mongodb://mongo:27017/dbname
         options: >-
           --health-cmd "curl --silent --fail localhost:27017 || exit 1"
           --health-timeout 30s
