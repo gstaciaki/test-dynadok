@@ -74,7 +74,8 @@ export class ClientController extends BaseController {
       const { id } = req.params;
       const { name, email, phone } = req.body;
       const updateClientUseCase = new UpdateClientUseCase(
-        this.clientRepository
+        this.clientRepository,
+        this.cacheService
       );
 
       const client = await updateClientUseCase.performExecute({
@@ -93,7 +94,8 @@ export class ClientController extends BaseController {
     try {
       const { id } = req.params;
       const deleteClientUseCase = new DeleteClientUseCase(
-        this.clientRepository
+        this.clientRepository,
+        this.cacheService
       );
 
       await deleteClientUseCase.performExecute(id);
