@@ -1,6 +1,6 @@
 import { BaseRepository } from "../../../infrastructure/repositories/_base/repository";
 import { initializeTestDB, stopTestDB } from "../../test-utils";
-import { TestEntity } from "./mocks/entity-mock.test";
+import { TestEntity } from "./mocks/entity-mock";
 
 describe("BaseRepository with BaseEntity", () => {
   let baseRepository: BaseRepository<TestEntity>;
