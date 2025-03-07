@@ -1,0 +1,58 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      mongo:
+        image: mongo:latest
+        ports:
+          - 27017:27017
+        options: >-
+          --health-cmd "curl --silent --fail localhost:27017 || exit 1"
+          --health-timeout 30s
+          --health-interval 10s
+          --health-retries 3
+
+      redis:
+        image: redis:latest
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping || exit 1"
+          --health-timeout 30s
+          --health-interval 10s
+          --health-retries 3
+
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v2
+
+      - name: Configurar Docker Compose
+        run: |
+          cp .env.example .env 
+          docker-compose -f docker-compose.yml up -d
+        env:
+          DOCKER_BUILDKIT: 1
+
+      - name: Instalar dependências
+        run: |
+          docker exec api npm install
+
+      - name: Rodar os testes
+        run: |
+          docker exec api npm run test
+
+      - name: Parar e remover os containers
+        run: |
+          docker-compose down
+
