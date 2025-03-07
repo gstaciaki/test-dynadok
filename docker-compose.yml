@@ -2,6 +2,7 @@ services:
   api:
     build: .
     container_name: api
+    mem_limit: 2g
     ports:
       - "3000:3000"
     env_file:
