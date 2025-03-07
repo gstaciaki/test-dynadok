@@ -1,8 +1,12 @@
-import { ClientRepository } from "../../../infrastructure/repositories/client.repository";
+import { IClientRepository } from "../../../domain/repositories/IClientRepository";
+import { CacheService } from "../../../services/CacheService";
 import { BaseUseCase } from "../_base/use-case";
 
 export class DeleteClientUseCase extends BaseUseCase<string, void> {
-  constructor(private clientRepository: ClientRepository) {
+  constructor(
+    private clientRepository: IClientRepository,
+    private cacheService: CacheService
+  ) {
     super();
   }
 
@@ -15,5 +19,11 @@ export class DeleteClientUseCase extends BaseUseCase<string, void> {
     if (!client) throw new Error("Client not found");
 
     await this.clientRepository.delete(id);
+
+    const cacheKey = `client:${id}`;
+    await this.cacheService.clearCache(cacheKey);
+
+    const cacheListKey = "clients";
+    await this.cacheService.clearCache(cacheListKey);
   }
 }

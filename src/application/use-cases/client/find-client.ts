@@ -1,11 +1,11 @@
 import { Client } from "../../../domain/entities/Client";
-import { ClientRepository } from "../../../infrastructure/repositories/client.repository";
+import { IClientRepository } from "../../../domain/repositories/IClientRepository";
 import { CacheService } from "../../../services/CacheService";
 import { BaseUseCase } from "../_base/use-case";
 
 export class FindClientUseCase extends BaseUseCase<string, Client | null> {
   constructor(
-    private clientRepository: ClientRepository,
+    private clientRepository: IClientRepository,
     private cacheService: CacheService
   ) {
     super();
@@ -20,7 +20,6 @@ export class FindClientUseCase extends BaseUseCase<string, Client | null> {
 
     const cachedClient = await this.cacheService.getCache<Client>(cacheKey);
     if (cachedClient) {
-      console.log(`Cliente ${id} retornado do cache`);
       return cachedClient;
     }
 
@@ -29,6 +28,8 @@ export class FindClientUseCase extends BaseUseCase<string, Client | null> {
 
     await this.cacheService.setCache(cacheKey, client, 600);
 
-    return client;
+    let clientData: Client;
+
+    return Object.assign(clientData, client);
   }
 }
