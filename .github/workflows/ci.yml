@@ -42,7 +42,7 @@ jobs:
       - name: Configurar Docker Compose
         run: |
           cp .env.example .env 
-          docker-compose -f docker-compose.yml up -d
+          docker compose -f docker compose.yml up -d
         env:
           DOCKER_BUILDKIT: 1
 
@@ -56,5 +56,5 @@ jobs:
 
       - name: Parar e remover os containers
         run: |
-          docker-compose down
+          docker compose down
 
