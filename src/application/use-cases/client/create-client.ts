@@ -1,4 +1,5 @@
 import { Client } from "../../../domain/entities/Client";
+import { ClientCreatedEvent } from "../../../domain/events/client-created-event";
 import { IClientRepository } from "../../../domain/repositories/IClientRepository";
 import { CreateClientDTO } from "../../dtos/client/CreateClient.dto";
 import { BaseUseCase } from "../_base/use-case";
@@ -21,6 +22,14 @@ export class CreateClientUseCase extends BaseUseCase<CreateClientDTO, Client> {
 
     const client = new Client(data.name, data.email, data.phone);
     const createdClient = await this.clientRepository.create(client);
+
+    const event: ClientCreatedEvent = {
+      type: "client-created",
+      payload: client,
+    };
+
+    await this.publishEvent(event);
+
     return Object.assign(client, createdClient);
   }
 }
