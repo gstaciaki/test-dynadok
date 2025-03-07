@@ -9,9 +9,7 @@ export class RedisClient {
       port: Number(process.env.REDIS_PORT) || 6379,
     });
 
-    this.client.on("connect", () => {
-      console.log("Conectado ao Redis!");
-    });
+    this.client.on("connect", () => {});
 
     this.client.on("error", (err) => {
       console.error("Erro no Redis:", err);
