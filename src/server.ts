@@ -3,7 +3,7 @@ import * as cors from "cors";
 import * as dotenv from "dotenv";
 import { AppDataSource } from "./infrastructure/database/data-source";
 import { routes } from "./interfaces/routes";
-import Redis from "ioredis";
+import { setupKafkaConsumer } from "./infrastructure/messaging/setup-consumer";
 
 dotenv.config();
 
@@ -17,6 +17,8 @@ app.get("/health", (req, res) => {
 });
 
 app.use("/api", routes);
+
+setupKafkaConsumer();
 
 AppDataSource.initialize()
   .then(() => {
