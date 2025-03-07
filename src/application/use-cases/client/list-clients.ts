@@ -1,11 +1,12 @@
 import { Client } from "../../../domain/entities/Client";
-import { ClientRepository } from "../../../infrastructure/repositories/client.repository";
+import { IClientRepository } from "../../../domain/repositories/IClientRepository";
 import { CacheService } from "../../../services/CacheService";
+import { ClientEntity } from "../../../infrastructure/database/entities/client.entity";
 import { BaseUseCase } from "../_base/use-case";
 
 export class ListClientsUseCase extends BaseUseCase<void, Client[]> {
   constructor(
-    private clientRepository: ClientRepository,
+    private clientRepository: IClientRepository,
     private cacheService: CacheService
   ) {
     super();
@@ -18,11 +19,17 @@ export class ListClientsUseCase extends BaseUseCase<void, Client[]> {
 
     const cachedClients = await this.cacheService.getCache<Client[]>(cacheKey);
     if (cachedClients) {
-      console.log("Retornando lista de clientes do cache");
       return cachedClients;
     }
 
-    const clients = await this.clientRepository.findAll();
+    const clientEntities: ClientEntity[] =
+      await this.clientRepository.findAll();
+
+    const clients: Client[] = clientEntities.map((clientEntity) => {
+      const client = new Client("", "", "");
+
+      return Object.assign(client, clientEntity);
+    });
 
     await this.cacheService.setCache(cacheKey, clients, 600);
 

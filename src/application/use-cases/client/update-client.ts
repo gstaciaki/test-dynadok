@@ -1,13 +1,17 @@
 import { Client } from "../../../domain/entities/Client";
-import { ClientRepository } from "../../../infrastructure/repositories/client.repository";
+import { IClientRepository } from "../../../domain/repositories/IClientRepository";
 import { UpdateClientDTO } from "../../dtos/client/UpdateClient.dto";
+import { CacheService } from "../../../services/CacheService";
 import { BaseUseCase } from "../_base/use-case";
 
 export class UpdateClientUseCase extends BaseUseCase<
   UpdateClientDTO,
   Client | null
 > {
-  constructor(private clientRepository: ClientRepository) {
+  constructor(
+    private clientRepository: IClientRepository,
+    private cacheService: CacheService
+  ) {
     super();
   }
 
@@ -37,6 +41,14 @@ export class UpdateClientUseCase extends BaseUseCase<
     }
     if (data.phone) client.chagePhone(data.phone);
 
-    return this.clientRepository.update(data.id, updatedData);
+    await this.clientRepository.update(data.id, updatedData);
+
+    const cacheKey = `client:${data.id}`;
+    await this.cacheService.setCache(cacheKey, client, 600);
+
+    const clientsCacheKey = "clients";
+    await this.cacheService.clearCache(clientsCacheKey);
+
+    return client;
   }
 }
