@@ -5,6 +5,14 @@
 
 Esta aplicação foi desenvolvida como proposta de teste técnico da Dynadok, tendo seus detalhes no seguinte link: https://gist.github.com/thebylito/63b551efbf4d10e715c4fe0519afe34e
 
+### Arquitetura
+A aplicação utiliza o **Clean Architecture** para organizar a estrutura de pastas e segue as boas práticas do **SOLID** no código. A infraestrutura é orquestrada utilizando o **Docker** com os seguintes serviços:
+
+- **API**: Imagem de Node.js que roda a aplicação. 
+- **MongoDB**: Banco de dados NoSQL utilizado para armazenar dados da aplicação. 
+- **Redis**: Sistema de cache em memória utilizado para otimizar consultas.
+- **Kafka**: Sistema de mensageria para publicação e consumo de mensagens. 
+- **Zookeeper**: Serviço de coordenação e gerenciamento de configuração utilizado para gerenciar o Kafka.
   
 
 ### Dependências
