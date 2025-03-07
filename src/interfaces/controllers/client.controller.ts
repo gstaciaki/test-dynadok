@@ -6,19 +6,24 @@ import { ListClientsUseCase } from "../../application/use-cases/client/list-clie
 import { FindClientUseCase } from "../../application/use-cases/client/find-client";
 import { BaseController } from "./_base/controller";
 import { ClientRepository } from "../../infrastructure/repositories/client.repository";
+import { CacheService } from "../../services/CacheService";
+import { RedisClient } from "../../infrastructure/cache/RedisClients";
 
 export class ClientController extends BaseController {
   private clientRepository: ClientRepository;
+  private cacheService: CacheService;
 
   constructor() {
     super();
     this.clientRepository = new ClientRepository();
+    this.cacheService = new CacheService(new RedisClient());
   }
 
   async index(req: Request, res: Response) {
     try {
       const findAllClientsUseCase = new ListClientsUseCase(
-        this.clientRepository
+        this.clientRepository,
+        this.cacheService
       );
       const clients = await findAllClientsUseCase.performExecute();
       this.ok(req, res, clients);
@@ -49,7 +54,8 @@ export class ClientController extends BaseController {
     try {
       const { id } = req.params;
       const findClientByIdUseCase = new FindClientUseCase(
-        this.clientRepository
+        this.clientRepository,
+        this.cacheService
       );
 
       const client = await findClientByIdUseCase.performExecute(id);

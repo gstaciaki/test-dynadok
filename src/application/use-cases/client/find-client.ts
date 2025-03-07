@@ -1,9 +1,13 @@
 import { Client } from "../../../domain/entities/Client";
 import { ClientRepository } from "../../../infrastructure/repositories/client.repository";
+import { CacheService } from "../../../services/CacheService";
 import { BaseUseCase } from "../_base/use-case";
 
 export class FindClientUseCase extends BaseUseCase<string, Client | null> {
-  constructor(private clientRepository: ClientRepository) {
+  constructor(
+    private clientRepository: ClientRepository,
+    private cacheService: CacheService
+  ) {
     super();
   }
 
@@ -12,9 +16,19 @@ export class FindClientUseCase extends BaseUseCase<string, Client | null> {
   }
 
   protected async execute(id: string): Promise<Client | null> {
-    const a = await this.clientRepository.findOne(id);
-    console.log(a);
+    const cacheKey = `client:${id}`;
 
-    return this.clientRepository.findOne(id);
+    const cachedClient = await this.cacheService.getCache<Client>(cacheKey);
+    if (cachedClient) {
+      console.log(`Cliente ${id} retornado do cache`);
+      return cachedClient;
+    }
+
+    const client = await this.clientRepository.findOne(id);
+    if (!client) return null;
+
+    await this.cacheService.setCache(cacheKey, client, 600);
+
+    return client;
   }
 }
